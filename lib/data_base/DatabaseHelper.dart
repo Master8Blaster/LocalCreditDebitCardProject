@@ -1,6 +1,7 @@
 import 'package:cardproject/models/CardModel.dart';
 import 'package:cardproject/models/CardOwnerModel.dart';
 import 'package:cardproject/models/ExpenseModel.dart';
+import 'package:cardproject/utils/GlobalMethods.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:sqflite/sqlite_api.dart';
@@ -100,9 +101,11 @@ class DatabaseHelper {
   }
 
   // all ownersTable operations methods
-  Future<int> addCardOwners(String name) async {
+  Future addCardOwners(String name) async {
     Database db = await instance.database;
-    return await db.insert(CARD_OWNER_TABLE, {cardOwnerName: name});
+    var data = await db.insert(CARD_OWNER_TABLE, {cardOwnerName: name});
+    GlobalMethods.printLog(data.toString());
+    return data;
   }
 
   Future<List<CardOwnerModel>> getAllCardOwners() async {

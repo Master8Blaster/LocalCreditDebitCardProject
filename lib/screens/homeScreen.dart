@@ -38,6 +38,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   _addOwner(String ownerName) async {
+    GlobalMethods.printLog(ownerName);
     await DatabaseHelper.instance.addCardOwners(ownerName);
     await getCardOwners();
   }
@@ -193,8 +194,7 @@ class _HomePageState extends State<HomePage> {
               InkWell(
                 onTap: () async {
                   if (formKey.currentState != null &&
-                      formKey.currentState!.validate() &&
-                      _scaffoldKey.currentState != null) {
+                      formKey.currentState!.validate()) {
                     if (controller.text.toString().trim().isNotEmpty) {
                       GlobalMethods.printLog(controller.text.toString().trim());
 
@@ -202,10 +202,9 @@ class _HomePageState extends State<HomePage> {
                       GlobalMethods.printLog(
                           "added ${controller.text.toString().trim()}");
                       GlobalMethods.showSnackBar(
-                          _scaffoldKey.currentState!.context,
+                          context,
                           "New CardOwner '${controller.text.toString().trim()}' added successfully.",
-                          Theme.of(_scaffoldKey.currentState!.context)
-                              .primaryColor);
+                          Theme.of(context).primaryColor);
                       Navigator.pop(context);
                     }
                   }
