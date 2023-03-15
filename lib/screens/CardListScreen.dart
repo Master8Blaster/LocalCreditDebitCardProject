@@ -166,27 +166,27 @@ class _CardListScreenState extends State<CardListScreen> {
               style: const TextStyle(color: Colors.black, fontSize: 18),
             ),
             Text(
-              "Expires : ${dataList[index].cardHolderName ?? ""}",
+              "Expires : ${dataList[index].cardExpiryDate ?? ""}",
               style: const TextStyle(color: Colors.black, fontSize: 18),
             ),
             Text(
-              "Payment : ${dataList[index].cardHolderName ?? ""}",
+              "Payment : ${dataList[index].cardPaymentDate ?? ""}",
               style: const TextStyle(color: Colors.black, fontSize: 18),
             ),
             Text(
-              "Number : ${dataList[index].cardHolderName ?? ""}",
+              "Number : ${dataList[index].cardNumber ?? ""}",
               style: const TextStyle(color: Colors.black, fontSize: 18),
             ),
             Text(
-              "Type : ${dataList[index].cardHolderName ?? ""}",
+              "Type : ${dataList[index].cardType ?? ""}",
               style: const TextStyle(color: Colors.black, fontSize: 18),
             ),
             Text(
-              "Limit : ${dataList[index].cardHolderName ?? ""}",
+              "Limit : ${dataList[index].cardLimit ?? ""}",
               style: const TextStyle(color: Colors.black, fontSize: 18),
             ),
             Text(
-              "CVV : ${dataList[index].cardHolderName ?? ""}",
+              "CVV : ${dataList[index].cardCvv ?? ""}",
               style: const TextStyle(color: Colors.black, fontSize: 18),
             ),
           ],
@@ -253,7 +253,7 @@ class _CardListScreenState extends State<CardListScreen> {
                   const SizedBox(height: 10),
                   _buildTextField(
                       controller: bankNameController,
-                      hint: "Card Bank Name(Master,Visa,etc...)",
+                      hint: "Card Bank Name(SBI,HDFC,etc...)",
                       keyboardType: TextInputType.name,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
