@@ -133,7 +133,7 @@ class _CardListScreenState extends State<CardListScreen> {
               color: COLORTEXT, fontWeight: FontWeight.w500, fontSize: 18),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
+/*      floatingActionButton: FloatingActionButton(
         onPressed: () {
           GlobalMethods.printLog("flottingclick1");
           showDialog(
@@ -142,7 +142,7 @@ class _CardListScreenState extends State<CardListScreen> {
           );
         },
         child: const Icon(Icons.add),
-      ),
+      ),*/
       body: SizedBox(
         width: MediaQuery.of(context).size.width,
         child: dataList.isNotEmpty && !isLoading
@@ -266,7 +266,6 @@ class _CardListScreenState extends State<CardListScreen> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               const SizedBox(height: 20),
-              Row(),
               Text(
                 "Card Holder Name :",
                 style: headerTextStyle,
@@ -275,6 +274,8 @@ class _CardListScreenState extends State<CardListScreen> {
                 dataList[index].cardHolderName ?? "",
                 style: valueTextStyle,
               ),
+              _buildDataRow(
+                  "Card Holder Name :", dataList[index].cardHolderName ?? ""),
               const SizedBox(height: 20),
               Text(
                 "Bank Name : ",
@@ -342,7 +343,7 @@ class _CardListScreenState extends State<CardListScreen> {
               ),
               const SizedBox(height: 20),
               Text(
-                "Card Limit : ",
+                "Card CVV : ",
                 style: headerTextStyle,
               ),
               Text(
@@ -352,6 +353,42 @@ class _CardListScreenState extends State<CardListScreen> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  _buildDataRow(String title, String data) {
+    return Container(
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              children: [
+                Text(
+                  title,
+                  style: headerTextStyle,
+                ),
+                Text(
+                  data,
+                  style: valueTextStyle,
+                ),
+              ],
+            ),
+          ),
+          IconButton(
+            onPressed: () async {
+              await Clipboard.setData(ClipboardData(text: data));
+              GlobalMethods.showSnackBar(
+                  context,
+                  "${title.replaceAll(":", "")}copied to your clipboard.",
+                  Colors.black);
+            },
+            icon: const Icon(
+              Icons.copy_all_rounded,
+              color: COLORTEXT,
+            ),
+          ),
+        ],
       ),
     );
   }
