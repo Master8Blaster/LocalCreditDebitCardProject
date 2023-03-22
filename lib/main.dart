@@ -1,4 +1,5 @@
 import 'package:cardproject/screens/homeScreen.dart';
+import 'package:cardproject/utils/ColrosConstants.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -14,9 +15,15 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: COLORPRIMERY,
+        scaffoldBackgroundColor: COLORBACKGROUND,
+        fontFamily: 'Poppins',
+        textTheme: const TextTheme(
+          bodyText1: TextStyle(color: COLORTEXT),
+          bodyText2: TextStyle(color: COLORTEXT),
+        ),
       ),
-      home: HomePage(),
+      home: const HomePage(),
     );
   }
 }

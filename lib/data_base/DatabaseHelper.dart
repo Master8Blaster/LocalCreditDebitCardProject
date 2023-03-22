@@ -111,6 +111,7 @@ class DatabaseHelper {
   Future<List<CardOwnerModel>> getAllCardOwners() async {
     Database db = await instance.database;
     final allRows = await db.query(CARD_OWNER_TABLE);
+    print(allRows.toSet().toString());
     List<CardOwnerModel> list = [];
     allRows.forEach((row) => list.add(CardOwnerModel.fromMap(row)));
     return list;
@@ -133,7 +134,8 @@ class DatabaseHelper {
   Future<List<CardModel>> getAllCardByOwnerId(int id) async {
     Database db = await instance.database;
     final allRows =
-        await db.query(CARDTABLE, where: "$cardId = ?", whereArgs: [id]);
+        await db.query(CARDTABLE, where: "$cardOwnerId = ?", whereArgs: [id]);
+
     List<CardModel> list = [];
     allRows.forEach((row) => list.add(CardModel.fromMap(row)));
     return list;

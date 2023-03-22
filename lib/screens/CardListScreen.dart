@@ -1,7 +1,11 @@
 import 'package:cardproject/models/CardModel.dart';
 import 'package:cardproject/models/CardOwnerModel.dart';
+import 'package:cardproject/utils/ColrosConstants.dart';
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:intl/intl.dart';
 import 'package:wheel_slider/wheel_slider.dart';
 
@@ -21,7 +25,21 @@ class _CardListScreenState extends State<CardListScreen> {
   List<CardModel> dataList = [];
   bool isLoading = false;
 
+  final TextStyle valueTextStyle = const TextStyle(
+    color: COLORPRIMERY,
+    fontSize: 18,
+    fontWeight: FontWeight.w600,
+  );
+
+  final TextStyle headerTextStyle = const TextStyle(
+    color: COLORTEXT,
+    fontSize: 14,
+    fontWeight: FontWeight.w500,
+  );
+
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  int currentIndex = 0;
 
   @override
   void initState() {
@@ -51,7 +69,70 @@ class _CardListScreenState extends State<CardListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: InkWell(
+          onTap: () {
+            Navigator.pop(context);
+          },
+          child: Container(
+            alignment: Alignment.center,
+            child: Icon(Icons.arrow_back_ios_new_rounded),
+          ),
+        ),
+        actions: [
+          Center(
+            child: InkWell(
+              onTap: () {
+                GlobalMethods.printLog("flottingclick");
+                showDialog(
+                  context: context,
+                  builder: (context) => _buildInsertOwnerDialog(),
+                );
+              },
+              child: Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 15, vertical: 7),
+                margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).primaryColor,
+                  borderRadius: BorderRadius.circular(30),
+                ),
+                child: const Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Image(
+                      image: Svg(
+                        "assets/svgs/add_owner.svg",
+                        size: Size(20, 20),
+                        color: COLORTEXT,
+                      ),
+                    ),
+                    SizedBox(
+                      width: 7,
+                    ),
+                    Text(
+                      "Add Owner",
+                      style: TextStyle(
+                        color: COLORTEXT,
+                        textBaseline: TextBaseline.alphabetic,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+        titleSpacing: 0,
+        title: Text(
+          widget.ownerModel.ownerName ?? "",
+          style: TextStyle(
+              color: COLORTEXT, fontWeight: FontWeight.w500, fontSize: 18),
+        ),
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           GlobalMethods.printLog("flottingclick1");
@@ -65,9 +146,43 @@ class _CardListScreenState extends State<CardListScreen> {
       body: SizedBox(
         width: MediaQuery.of(context).size.width,
         child: dataList.isNotEmpty && !isLoading
-            ? ListView.builder(
-                itemCount: dataList.length,
-                itemBuilder: (context, index) => _buildListItem(context, index),
+            // ? ListView.builder(
+            //     itemCount: dataList.length,
+            //     itemBuilder: (context, index) => _buildListItem(context, index),
+            //   )
+
+            ? Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Flexible(
+                    child: CarouselSlider.builder(
+                      itemCount: dataList.length,
+                      // carouselController: carouselController,
+                      options: CarouselOptions(
+                          aspectRatio: 2 / 3,
+                          viewportFraction: .93,
+                          enableInfiniteScroll: false,
+                          onPageChanged: (index, reson) {
+                            currentIndex = index;
+                            setState(() {});
+                          }),
+                      itemBuilder: (BuildContext context, int itemIndex,
+                              int pageViewIndex) =>
+                          _buildListItem(context, itemIndex),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  DotsIndicator(
+                    dotsCount: dataList.length,
+                    position: currentIndex.toDouble(),
+                    decorator: DotsDecorator(
+                      size: const Size.square(9.0),
+                      activeSize: const Size(12, 12),
+                    ),
+                  )
+                ],
               )
             : isLoading
                 ? const CircularProgressIndicator()
@@ -138,58 +253,104 @@ class _CardListScreenState extends State<CardListScreen> {
         );*/
       },
       child: Container(
-        alignment: Alignment.center,
-        padding: const EdgeInsets.symmetric(vertical: 15),
-        margin: const EdgeInsets.only(top: 10, left: 10, right: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 15),
+        margin: const EdgeInsets.only(left: 5, right: 5),
         decoration: BoxDecoration(
-          color: Theme.of(context).primaryColorLight,
+          color: COLORDIALOG,
           border: Border.all(color: Colors.black),
           borderRadius: BorderRadius.circular(10),
         ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              "Card Holder Name : ${dataList[index].cardHolderName ?? ""}",
-              style: const TextStyle(color: Colors.black, fontSize: 18),
-            ),
-            Text(
-              "Bank Name : ${dataList[index].cardBankName ?? ""}",
-              style: const TextStyle(color: Colors.black, fontSize: 18),
-            ),
-            Text(
-              "Company Name : ${dataList[index].cardCompanyName ?? ""}",
-              style: const TextStyle(color: Colors.black, fontSize: 18),
-            ),
-            Text(
-              "Generated : ${dataList[index].cardGenerateDate ?? ""}",
-              style: const TextStyle(color: Colors.black, fontSize: 18),
-            ),
-            Text(
-              "Expires : ${dataList[index].cardExpiryDate ?? ""}",
-              style: const TextStyle(color: Colors.black, fontSize: 18),
-            ),
-            Text(
-              "Payment : ${dataList[index].cardPaymentDate ?? ""}",
-              style: const TextStyle(color: Colors.black, fontSize: 18),
-            ),
-            Text(
-              "Number : ${dataList[index].cardNumber ?? ""}",
-              style: const TextStyle(color: Colors.black, fontSize: 18),
-            ),
-            Text(
-              "Type : ${dataList[index].cardType ?? ""}",
-              style: const TextStyle(color: Colors.black, fontSize: 18),
-            ),
-            Text(
-              "Limit : ${dataList[index].cardLimit ?? ""}",
-              style: const TextStyle(color: Colors.black, fontSize: 18),
-            ),
-            Text(
-              "CVV : ${dataList[index].cardCvv ?? ""}",
-              style: const TextStyle(color: Colors.black, fontSize: 18),
-            ),
-          ],
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              const SizedBox(height: 20),
+              Row(),
+              Text(
+                "Card Holder Name :",
+                style: headerTextStyle,
+              ),
+              Text(
+                dataList[index].cardHolderName ?? "",
+                style: valueTextStyle,
+              ),
+              const SizedBox(height: 20),
+              Text(
+                "Bank Name : ",
+                style: headerTextStyle,
+              ),
+              Text(
+                dataList[index].cardBankName ?? "",
+                style: valueTextStyle,
+              ),
+              const SizedBox(height: 20),
+              Text(
+                "Company Name : ",
+                style: headerTextStyle,
+              ),
+              Text(
+                dataList[index].cardCompanyName ?? "",
+                style: valueTextStyle,
+              ),
+              const SizedBox(height: 20),
+              Text(
+                "Expires : ",
+                style: headerTextStyle,
+              ),
+              Text(
+                DateFormat("MM-yyyy").format(
+                    DateTime.parse(dataList[index].cardExpiryDate ?? "")),
+                style: valueTextStyle,
+              ),
+              const SizedBox(height: 20),
+              Text(
+                "Payment Date : ",
+                style: headerTextStyle,
+              ),
+              Text(
+                DateFormat("dd-MM-yyyy").format(
+                    DateTime.parse(dataList[index].cardPaymentDate ?? "")),
+                style: valueTextStyle,
+              ),
+              const SizedBox(height: 20),
+              Text(
+                "Card Number : ",
+                style: headerTextStyle,
+              ),
+              Text(
+                dataList[index].cardNumber ?? "",
+                style: valueTextStyle,
+              ),
+              const SizedBox(height: 20),
+              Text(
+                "Card Type : ",
+                style: headerTextStyle,
+              ),
+              Text(
+                dataList[index].cardType == "1" ? "Debit" : "Credit",
+                style: valueTextStyle,
+              ),
+              const SizedBox(height: 20),
+              Text(
+                "Card Limit : ",
+                style: headerTextStyle,
+              ),
+              Text(
+                dataList[index].cardLimit.toString() ?? "",
+                style: valueTextStyle,
+              ),
+              const SizedBox(height: 20),
+              Text(
+                "Card Limit : ",
+                style: headerTextStyle,
+              ),
+              Text(
+                dataList[index].cardCvv ?? "",
+                style: valueTextStyle,
+              ),
+            ],
+          ),
         ),
       ),
     );
